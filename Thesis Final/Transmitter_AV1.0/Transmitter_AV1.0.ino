@@ -88,9 +88,10 @@ void read_sensors(){
 }
 
 void loop(){
-  char radiopacket[20];
+  String packet,spd_raw;
   float spd,t;
   read_sensors();
+  char radiopacket[20];
 
   if(distance1>7.87 && distance1<86.61){
     if(StopWatch.isRunning()==false){
@@ -99,12 +100,14 @@ void loop(){
     }
   }
   else if(distance1<7.87 && flag==1 || distance1>86.61 && flag==1){
-      radiopacket[0]="A";
       t=StopWatch.elapsed();
       Serial.println(t);
       spd=12/(t/1000);
+      spd_raw=spd;
       Serial.println(spd);
-      dtostrf(spd,4,6,radiopacket);
+      packet='A'+spd_raw;
+      Serial.println(packet);
+      packet.toCharArray(radiopacket,20);
       Serial.println(radiopacket);
       rf95.send((uint8_t*)radiopacket, 20);
       rf95.waitPacketSent();

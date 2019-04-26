@@ -106,8 +106,9 @@ void loop(){
       spd_raw=spd;
       Serial.println(spd);
       packet='B'+spd_raw;
-      Serial.println(radiopacket);
+      Serial.println(packet);
       packet.toCharArray(radiopacket,20);
+      Serial.println(radiopacket);
       rf95.send((uint8_t*)radiopacket, 20);
       rf95.waitPacketSent();
       Serial.println("Sent");

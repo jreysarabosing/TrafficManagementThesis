@@ -75,27 +75,30 @@ void setup()
 }
 
 void loop(){
-  char radiopacket[20];
   if (rf95.available()){
     // Should be a message for us now   
     uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
     if (rf95.recv(buf, &len)){
-      for(int i=0;i<len;i++){
-        radiopacket[i]=char(buf[i]);
-      }
-      if(radiopacket[0]=="A"){
+      if(buf[0]=='A'){
         Serial.print("DATA,TIME,TIMER,");
-        Serial.println(radiopacket);
+        for(int i=1;i<len;i++){
+          buf[i-1]=buf[i];
+        }
+        Serial.println((char*)buf);
         digitalWrite(LED, HIGH);
         digitalWrite(LED, LOW);
-      }else if(radiopacket[0]=="B"){
+      }else if(buf[0]=='B'){
         Serial.print("DATA,TIME,TIMER,,");
-        Serial.println(radiopacket);
+        for(int i=1;i<len;i++){
+          buf[i-1]=buf[i];
+        }
+        Serial.println((char*)buf);
         digitalWrite(LED, HIGH);
         digitalWrite(LED, LOW);
       }else{
-        Serial.println("No data");
+        Serial.println((char*)buf);
+        //Serial.println("No data");
       }
     }
   }
